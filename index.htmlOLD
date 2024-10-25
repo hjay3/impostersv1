@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Object Animation</title>
+    <style>
+      canvas {
+        border: 6px solid black;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="animationCanvas" width="165" height="165"></canvas>
+    <div>
+      <label for="fpsSlider">FPS: </label>
+      <input type="range" id="fpsSlider" min="5" max="70" value="25" />
+      <span id="fpsValue">18</span>
+    </div>
+    <script>
+      const canvas = document.getElementById('animationCanvas');
+      const ctx = canvas.getContext('2d');
+      const fpsSlider = document.getElementById('fpsSlider');
+      const fpsValue = document.getElementById('fpsValue');
+
+      const totalFrames = 10;
+      const images = [];
+      let currentFrame = 0;
+      let lastFrameTime = 0;
+      let fps = 15;
+
+      // Preload images
+      function preloadImages() {
+        for (let i = 0; i < totalFrames; i++) {
+          const img = new Image();
+          img.src = `star/frame_${i}.png`; // Replace with your image paths
+          images.push(img);
+        }
+      }
+
+      function animate(currentTime) {
+        requestAnimationFrame(animate);
+
+        // Control frame rate
+        if (currentTime - lastFrameTime < 1000 / fps) return;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw current frame
+        ctx.drawImage(images[currentFrame], 0, 0, canvas.width, canvas.height);
+
+        // Update frame
+        currentFrame = (currentFrame + 1) % totalFrames;
+        lastFrameTime = currentTime;
+      }
+
+      // Update FPS based on slider value
+      fpsSlider.addEventListener('input', function () {
+        fps = parseInt(this.value);
+        fpsValue.textContent = fps;
+      });
+
+      // Start animation
+      preloadImages();
+      images[0].onload = function () {
+        requestAnimationFrame(animate);
+      };
+    </script>
+  </body>
+</html>

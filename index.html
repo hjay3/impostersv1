@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple Animated Canvases</title>
+    <style>
+      .canvas-container {
+        display: inline-block;
+        margin: 0px;
+      }
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvasContainer"></div>
+    <script src="animationScript.js"></script>
+    <script>
+      // Initialize canvases after the DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('canvasContainer');
+
+        // Create 20 canvases with different settings
+        for (let i = 0; i < 15; i++) {
+          const canvasElement = document.createElement('canvas');
+          canvasElement.width = 100;
+          canvasElement.height = 100;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'canvas-container';
+          wrapper.appendChild(canvasElement);
+          container.appendChild(wrapper);
+
+          // Initialize each canvas with different settings
+          initializeCanvas(canvasElement, 15, '#FF0000', true);
+        }
+
+        // Example of a random canvas
+        /*
+        const randomCanvas = document.createElement('canvas');
+        randomCanvas.width = 165;
+        randomCanvas.height = 165;
+        const randomWrapper = document.createElement('div');
+        randomWrapper.className = 'canvas-container';
+        randomWrapper.appendChild(randomCanvas);
+        container.appendChild(randomWrapper);
+        */
+        //initializeCanvas(randomCanvas, 30, '#00FF00', true);
+      });
+    </script>
+  </body>
+</html>

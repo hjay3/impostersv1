@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Object Animation (33% Size) with Color Overlay</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+      .controls {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="animationCanvas" width="165" height="165"></canvas>
+    <div class="controls">
+      <div>
+        <label for="fpsSlider">FPS: </label>
+        <input type="range" id="fpsSlider" min="5" max="30" value="15" />
+        <span id="fpsValue">15</span>
+      </div>
+      <div>
+        <label for="colorPicker">Color Overlay: </label>
+        <input type="color" id="colorPicker" value="#ffffff" />
+      </div>
+    </div>
+    <script>
+      const canvas = document.getElementById('animationCanvas');
+      const ctx = canvas.getContext('2d');
+      const fpsSlider = document.getElementById('fpsSlider');
+      const fpsValue = document.getElementById('fpsValue');
+      const colorPicker = document.getElementById('colorPicker');
+
+      const totalFrames = 10;
+      const images = [];
+      let currentFrame = 0;
+      let lastFrameTime = 0;
+      let fps = 15;
+      let overlayColor = '#ffffff';
+
+      // Original image dimensions (assuming 500x500)
+      const originalWidth = 500;
+      const originalHeight = 500;
+
+      // New dimensions (33% of original)
+      const newWidth = Math.floor(originalWidth * 3.33);
+      const newHeight = Math.floor(originalHeight * 3.33);
+
+      // Preload images
+      function preloadImages() {
+        for (let i = 0; i < totalFrames; i++) {
+          const img = new Image();
+          img.src = `star/frame_${i}.png`; //
+          images.push(img);
+        }
+      }
+
+      function animate(currentTime) {
+        requestAnimationFrame(animate);
+
+        // Control frame rate
+        if (currentTime - lastFrameTime < 1000 / fps) return;
+
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw current frame at 33% size
+        ctx.drawImage(
+          images[currentFrame],
+          0,
+          0,
+          originalWidth,
+          originalHeight,
+          0,
+          0,
+          newWidth,
+          newHeight
+        );
+
+        // Apply color overlay
+        ctx.globalCompositeOperation = 'source-atop';
+        ctx.fillStyle = overlayColor;
+        ctx.globalAlpha = 0.5; // Adjust this value to control the intensity of the color overlay
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Reset composite operation and alpha
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+
+        // Update frame
+        currentFrame = (currentFrame + 1) % totalFrames;
+        lastFrameTime = currentTime;
+      }
+
+      // Update FPS based on slider value
+      fpsSlider.addEventListener('input', function () {
+        fps = parseInt(this.value);
+        fpsValue.textContent = fps;
+      });
+
+      // Update overlay color
+      colorPicker.addEventListener('input', function () {
+        overlayColor = this.value;
+      });
+
+      // Start animation
+      preloadImages();
+      images[0].onload = function () {
+        requestAnimationFrame(animate);
+      };
+    </script>
+  </body>
+</html>
